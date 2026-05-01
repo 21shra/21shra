@@ -1,0 +1,109 @@
+{
+  "theme": "light",
+  "archetype": "1 - Organic & Earthy (Modified for Finance/Utility - High Contrast Trust)",
+  "brand_identity": {
+    "name": "BillBuster",
+    "vibe": "WhatsApp-simple, Trustworthy, Alert, Approachable",
+    "target_audience": "Indian small business owners, non-tech-savvy shopkeepers"
+  },
+  "typography": {
+    "primary_heading_font": "Work Sans",
+    "secondary_body_font": "Hind",
+    "fallback_font": "sans-serif",
+    "rules": [
+      "Use Hind for native Devanagari script support (Hindi/Marathi).",
+      "Headings must use Work Sans for clear, modern numeric readability.",
+      "Minimum tap target text should be 16px (text-base).",
+      "Use tight letter spacing (tracking-tight) for large numbers (e.g., ₹ amounts)."
+    ],
+    "hierarchy": {
+      "h1": "text-3xl sm:text-4xl font-bold tracking-tight",
+      "h2": "text-2xl sm:text-3xl font-semibold",
+      "h3": "text-xl font-medium",
+      "body": "text-base leading-relaxed",
+      "small": "text-sm text-gray-600"
+    }
+  },
+  "colors": {
+    "background": {
+      "app": "bg-gray-50",
+      "card": "bg-white",
+      "overlay": "bg-black/40"
+    },
+    "primary": {
+      "DEFAULT": "bg-green-600",
+      "hover": "hover:bg-green-700",
+      "text": "text-green-700",
+      "light": "bg-green-50"
+    },
+    "danger": {
+      "DEFAULT": "bg-red-600",
+      "hover": "hover:bg-red-700",
+      "text": "text-red-700",
+      "light": "bg-red-50"
+    },
+    "text": {
+      "primary": "text-gray-900",
+      "secondary": "text-gray-600",
+      "disabled": "text-gray-400",
+      "inverse": "text-white"
+    },
+    "border": {
+      "DEFAULT": "border-gray-200",
+      "focus": "focus:ring-2 focus:ring-green-500 focus:border-green-500"
+    }
+  },
+  "spacing_and_layout": {
+    "container": "max-w-md mx-auto h-[100dvh] bg-gray-50 flex flex-col relative shadow-xl overflow-hidden md:border md:border-gray-200",
+    "padding": "p-4 sm:p-6",
+    "touch_targets": "min-h-[48px] min-w-[48px]",
+    "button_radius": "rounded-xl",
+    "card_radius": "rounded-2xl"
+  },
+  "components": {
+    "buttons": {
+      "primary": "w-full min-h-[56px] bg-green-600 text-white rounded-xl font-bold text-lg shadow-sm hover:bg-green-700 active:scale-[0.98] transition-all flex items-center justify-center gap-2",
+      "danger": "w-full min-h-[56px] bg-red-600 text-white rounded-xl font-bold text-lg shadow-sm hover:bg-red-700 active:scale-[0.98] transition-all flex items-center justify-center gap-2",
+      "secondary": "w-full min-h-[56px] bg-white text-gray-900 border-2 border-gray-200 rounded-xl font-semibold text-lg hover:border-gray-300 active:bg-gray-50 transition-all flex items-center justify-center gap-2"
+    },
+    "cards": {
+      "default": "bg-white p-5 rounded-2xl shadow-sm border border-gray-100",
+      "result_pass": "bg-green-50 p-6 rounded-2xl border-2 border-green-200 text-center",
+      "result_fail": "bg-red-50 p-6 rounded-2xl border-2 border-red-200 text-center"
+    },
+    "bottom_nav": {
+      "container": "w-full bg-white border-t border-gray-200 flex justify-around items-center h-20 pb-safe",
+      "item": "flex flex-col items-center justify-center w-full h-full gap-1 text-gray-500",
+      "item_active": "flex flex-col items-center justify-center w-full h-full gap-1 text-green-600 font-medium"
+    }
+  },
+  "icons_strategy": {
+    "library": "lucide-react",
+    "usage": "Use large icons (w-12 h-12 to w-24 h-24) with circular background layers for emotional impact on result screens. Use 24x24 for bottom navigation."
+  },
+  "media_and_images": {
+    "invoice_success_hero": {
+      "url": "https://static.prod-images.emergentagent.com/jobs/8835d1b3-3fab-41b6-ae05-317ae3c1a4fe/images/a262b313716723e5ef88124ca14f29c21e7e3f9f2084cdce626eb2c2d002848a.png",
+      "description": "3D illustration of an invoice with a green checkmark, used for zero-error success screens."
+    },
+    "empty_state_strategy": "Since generated images hit quota, heavily utilize Lucide icons (e.g., FileX, CheckCircle, AlertTriangle) encased in soft colored circles (bg-gray-100 p-6 rounded-full) as hero graphics for empty states."
+  },
+  "animations": {
+    "library": "framer-motion",
+    "screen_transition": "Slide in from right on navigate, slide out to right on back",
+    "result_pop": "scale up from 0.8 to 1 with spring physics for the success/error icons",
+    "active_state": "scale-[0.98] on active for all touchable elements (buttons, cards)"
+  },
+  "accessibility": {
+    "contrast": "Ensure red and green text meets APCA contrast standards. Use darker shades (700) against light backgrounds (50).",
+    "language": "UI must support Devanagari script natively without layout breakage.",
+    "testing_attributes": "All buttons, tabs, and result values must have a data-testid attribute."
+  },
+  "key_screens_instructions": {
+    "home": "Top bar with Language Toggle and App Name. A prominent Monthly ITC Risk card. A massive 'Scan New Bill' primary button in the center.",
+    "scanner": "Simulated camera viewfinder (dark background with target box overlay). Includes a flash toggle icon and a prominent shutter button.",
+    "result": "Dramatic Pass/Fail UI. If fail, show '₹X,XXX ITC Loss' in giant red text, followed by extracted data (GSTIN, HSN, Taxable) in a card, and a clear 'Fix' explanation.",
+    "history": "Simple list view. Each row shows Vendor Name, Date, Amount, and a Green/Red indicator chip for status.",
+    "help": "WhatsApp-style chat interface for AI assistance."
+  }
+}
