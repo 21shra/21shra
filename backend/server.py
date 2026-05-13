@@ -1,3 +1,4 @@
+from contextlib import asynccontextmanager
 from fastapi import FastAPI, APIRouter, HTTPException
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
@@ -17,18 +18,37 @@ from emergentintegrations.llm.chat import LlmChat, UserMessage, ImageContent
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / ".env")
 
-MONGO_URL = os.environ["MONGO_URL"]
-DB_NAME = os.environ["DB_NAME"]
-EMERGENT_LLM_KEY = os.environ.get("EMERGENT_LLM_KEY", "")
-
-client = AsyncIOMotorClient(MONGO_URL)
-db = client[DB_NAME]
-
-app = FastAPI(title="BillBuster API")
-api = APIRouter(prefix="/api")
-
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger("billbuster")
+
+MONGO_URL = os.environ.get("MONGO_URL")
+DB_NAME = os.environ.get("DB_NAME")
+EMERGENT_LLM_KEY = os.environ.get("EMERGENT_LLM_KEY", "")
+
+if not MONGO_URL:
+    logger.error("MONGO_URL environment variable is not set. Backend cannot connect to MongoDB.")
+if not DB_NAME:
+    logger.error("DB_NAME environment variable is not set.")
+
+client = AsyncIOMotorClient(MONGO_URL) if MONGO_URL else None
+db = client[DB_NAME] if (client and DB_NAME) else None
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    if db is not None:
+        try:
+            await client.admin.command("ping")
+            logger.info("MongoDB connected: db=%s", DB_NAME)
+        except Exception as e:
+            logger.error("MongoDB ping failed: %s", e)
+    yield
+    if client is not None:
+        client.close()
+
+
+app = FastAPI(title="BillBuster API", lifespan=lifespan)
+api = APIRouter(prefix="/api")
 
 # ---------------- HSN -> GST mapping (hardcoded master) ----------------
 HSN_GST_MAP: Dict[str, float] = {
@@ -382,6 +402,6 @@ app.add_middleware(
 )
 
 
-@app.on_event("shutdown")
-async def shutdown_db_client():
-    client.close()
+@app.get("/")
+async def root_health():
+    return {"service": "BillBuster", "ok": True}
