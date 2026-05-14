@@ -307,21 +307,24 @@ async def list_scans(limit: int = 100):
 
 @api.get("/monthly-report")
 async def monthly_report():
-    cursor = db.scans.find({}, {"_id": 0})
-    docs = await cursor.to_list(length=5000)
+    if db is None:
+        raise HTTPException(status_code=503, detail="Database not available")
     now = datetime.now(timezone.utc)
     month_key = now.strftime("%Y-%m")
 
+    cursor = db.scans.find(
+        {"created_at": {"$regex": f"^{month_key}"}},
+        {"_id": 0},
+    ).limit(1000)
+    docs = await cursor.to_list(length=1000)
+
     total_risk = 0.0
-    total_scans = 0
+    total_scans = len(docs)
     error_scans = 0
     for d in docs:
-        ca = d.get("created_at", "")
-        if ca.startswith(month_key):
-            total_scans += 1
-            total_risk += float(d.get("itc_at_risk", 0) or 0)
-            if d.get("status") == "error":
-                error_scans += 1
+        total_risk += float(d.get("itc_at_risk", 0) or 0)
+        if d.get("status") == "error":
+            error_scans += 1
 
     return {
         "month": month_key,
