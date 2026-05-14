@@ -2,7 +2,7 @@ export type Lang = "en" | "hi" | "mr";
 
 export const STRINGS: Record<Lang, Record<string, string>> = {
   en: {
-    appName: "BillBuster",
+    appName: "BillShiHai",
     tagline: "Scan any B2B bill. Find GST errors in 3 seconds.",
     scanBill: "Scan Bill",
     history: "History",
@@ -38,7 +38,7 @@ export const STRINGS: Record<Lang, Record<string, string>> = {
     demoSample: "Use demo sample",
   },
   hi: {
-    appName: "BillBuster",
+    appName: "BillShiHai",
     tagline: "कोई भी B2B बिल स्कैन करें। 3 सेकंड में GST गलती पकड़ें।",
     scanBill: "बिल स्कैन करें",
     history: "हिस्ट्री",
@@ -74,7 +74,7 @@ export const STRINGS: Record<Lang, Record<string, string>> = {
     demoSample: "डेमो सैंपल",
   },
   mr: {
-    appName: "BillBuster",
+    appName: "BillShiHai",
     tagline: "कोणतंही B2B बिल स्कॅन करा. ३ सेकंदात GST चुक शोधा.",
     scanBill: "बिल स्कॅन करा",
     history: "हिस्ट्री",

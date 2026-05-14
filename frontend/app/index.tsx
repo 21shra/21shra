@@ -33,7 +33,7 @@ export default function Home() {
         {/* Header */}
         <View style={styles.header}>
           <View>
-            <Text style={styles.brand} testID="app-name">BillBuster</Text>
+            <Text style={styles.brand} testID="app-name">BillShiHai</Text>
             <Text style={styles.tagline}>{t(lang, "tagline")}</Text>
           </View>
           <View style={styles.langPill} testID="lang-toggle">

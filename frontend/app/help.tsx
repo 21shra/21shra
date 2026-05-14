@@ -26,10 +26,10 @@ export default function Help() {
       role: "assistant",
       content:
         lang === "hi"
-          ? "नमस्ते! मैं BillBuster सहायक हूँ. GST, HSN, ITC के बारे में कुछ भी पूछें."
+          ? "नमस्ते! मैं BillShiHai सहायक हूँ. GST, HSN, ITC के बारे में कुछ भी पूछें."
           : lang === "mr"
-          ? "नमस्कार! मी BillBuster सहाय्यक आहे. GST, HSN, ITC बद्दल काहीही विचारा."
-          : "Hi! I am BillBuster Assistant. Ask me anything about GST, HSN, ITC.",
+          ? "नमस्कार! मी BillShiHai सहाय्यक आहे. GST, HSN, ITC बद्दल काहीही विचारा."
+          : "Hi! I am BillShiHai Assistant. Ask me anything about GST, HSN, ITC.",
     },
   ]);
   const [input, setInput] = useState("");

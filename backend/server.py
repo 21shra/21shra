@@ -47,7 +47,7 @@ async def lifespan(app: FastAPI):
         client.close()
 
 
-app = FastAPI(title="BillBuster API", lifespan=lifespan)
+app = FastAPI(title="BillShiHai API", lifespan=lifespan)
 api = APIRouter(prefix="/api")
 
 # ---------------- HSN -> GST mapping (hardcoded master) ----------------
@@ -264,7 +264,7 @@ async def extract_invoice_fields(image_base64: str) -> ExtractedInvoice:
 # ---------------- Routes ----------------
 @api.get("/")
 async def root():
-    return {"service": "BillBuster", "ok": True}
+    return {"service": "BillShiHai", "ok": True}
 
 
 @api.get("/hsn")
