@@ -267,6 +267,73 @@ async def root():
     return {"service": "BillShiHai", "ok": True}
 
 
+# ---------------- Demo Invoice Generator (Gemini Nano Banana) ----------------
+DEMO_INVOICE_PROMPTS = [
+    (
+        "Photorealistic top-down photo of a printed Indian B2B GST tax invoice on white A4 paper. "
+        "Header in bold: 'SHREE GANESH TRADERS PVT LTD'. GSTIN: 27AABCS1234E1Z5. "
+        "Invoice No: SGT/2025/0421. Date: 15-Mar-2025. "
+        "Single line item: 'Smartphone Accessory Box', HSN: 8517, Taxable Value: 25000.00. "
+        "GST @ 18%. CGST 2250.00. SGST 2250.00. Total: Rs. 29500.00. "
+        "Black ink, neat tabular layout, subtle paper shadow, slightly off-center."
+    ),
+    (
+        "Photorealistic photo of a printed Indian GST B2B tax invoice. "
+        "Vendor: 'MUMBAI OFFICE SUPPLIES'. GSTIN: 27AABCM5678F1Z3. "
+        "Invoice No: MOS-1042. Date: 10-Feb-2025. "
+        "Line item: 'Laser Printer A4', HSN: 8471, Taxable Value: 18000.00. "
+        "GST shown as 12% (CGST 1080.00, SGST 1080.00). Total: Rs. 20160.00. "
+        "Crisp paper texture, photographed on a wooden desk, slight skew."
+    ),
+    (
+        "Photorealistic image of an Indian GST tax invoice on white paper. "
+        "Vendor: 'PUNE TECH SOLUTIONS'. GSTIN: 27ABCDE9876G1ZT. "
+        "Invoice: PTS/INV/0512. Date: 22-Apr-2025. "
+        "Description: 'IT Consulting Service'. HSN: 9983. Taxable: 50000.00. GST 18%. "
+        "CGST 4500.00. SGST 4500.00. Total: Rs. 59000.00. "
+        "Round vendor stamp at bottom-right, slight paper crease."
+    ),
+]
+
+
+class DemoInvoiceResponse(BaseModel):
+    image_base64: str
+    mime_type: str = "image/png"
+
+
+@api.post("/demo-invoice", response_model=DemoInvoiceResponse)
+async def generate_demo_invoice():
+    if not EMERGENT_LLM_KEY:
+        raise HTTPException(status_code=500, detail="LLM key not configured")
+    import random
+    prompt = random.choice(DEMO_INVOICE_PROMPTS)
+    try:
+        chat = (
+            LlmChat(
+                api_key=EMERGENT_LLM_KEY,
+                session_id=f"demo-inv-{uuid.uuid4()}",
+                system_message="You generate photorealistic images of Indian GST tax invoices for app demos.",
+            )
+            .with_model("gemini", "gemini-3.1-flash-image-preview")
+            .with_params(modalities=["image", "text"])
+        )
+
+        msg = UserMessage(text=prompt)
+        _text, images = await chat.send_message_multimodal_response(msg)
+        if not images:
+            raise HTTPException(status_code=502, detail="No image returned from generator")
+        first = images[0]
+        return DemoInvoiceResponse(
+            image_base64=first["data"],
+            mime_type=first.get("mime_type", "image/png"),
+        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.exception("Demo invoice generation failed")
+        raise HTTPException(status_code=500, detail=f"Demo generation failed: {e}")
+
+
 @api.get("/hsn")
 async def hsn_list():
     return {"hsn_gst_map": HSN_GST_MAP, "rcm_hsn": sorted(list(RCM_HSN_CODES))}

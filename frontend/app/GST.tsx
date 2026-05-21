@@ -72,17 +72,25 @@ export default function Scan() {
   };
 
   const useDemo = async () => {
+    // small test invoice image (jpeg) – public URL converted to base64 via fetch
     setLoading(true);
     try {
-      const r = await fetch(`${BACKEND}/api/demo-invoice`, { method: "POST" });
-      if (!r.ok) throw new Error(await r.text());
-      const data = await r.json();
-      const b64 = data.image_base64;
-      const mime = data.mime_type || "image/png";
-      const uri = `data:${mime};base64,${b64}`;
-      await submit(b64, uri);
+      const u = "https://images.unsplash.com/photo-1554224154-26032ffc0d07?w=900&q=80";
+      const r = await fetch(u);
+      const blob = await r.blob();
+      const b64 = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const s = (reader.result as string) || "";
+          resolve(s.split(",")[1] || "");
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+      await submit(b64, u);
     } catch (e: any) {
       Alert.alert("Demo failed", e.message);
+    } finally {
       setLoading(false);
     }
   };
@@ -135,15 +143,14 @@ export default function Scan() {
           <Ionicons name="images-outline" size={22} color="#111827" />
           <Text style={styles.secondaryText}>{t(lang, "pickGallery")}</Text>
         </TouchableOpacity>
-        {Platform.OS !== undefined && (
+        {Platform.OS === "web" && (
           <TouchableOpacity
             style={styles.linkBtn}
             onPress={useDemo}
             disabled={loading}
             testID="demo-btn"
           >
-            <Ionicons name="sparkles" size={16} color="#059669" />
-            <Text style={styles.linkText}>  {t(lang, "demoSample")}</Text>
+            <Text style={styles.linkText}>{t(lang, "demoSample")}</Text>
           </TouchableOpacity>
         )}
       </View>
@@ -178,6 +185,6 @@ const styles = StyleSheet.create({
     justifyContent: "center", flexDirection: "row", gap: 10, borderWidth: 1.5, borderColor: "#e5e7eb",
   },
   secondaryText: { color: "#111827", fontSize: 16, fontWeight: "700" },
-  linkBtn: { alignItems: "center", justifyContent: "center", flexDirection: "row", paddingVertical: 10 },
+  linkBtn: { alignItems: "center", paddingVertical: 8 },
   linkText: { color: "#059669", fontSize: 14, fontWeight: "700" },
 });
